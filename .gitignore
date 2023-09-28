@@ -1,3 +1,49 @@
 .env
-hand-therapy\
+hand-therapy/
+__pycache__/
+migrations/
+.vscode/
 # hand-therapy\ = the venv
+
+# flask-migrate is like a version control tool for sqlalchemy. its like a git for sql alchemy.
+
+# if you don't know which pip installs you need to do, copy his requirements.txt and then put "pip install -r requirements.txt"
+
+# can run "flask shell" in terminal
+# if you do then you need to do "pip install psycopg2-binary", then pip freeze > requirements.txt
+# flask shell - its like a python env but using specific flask stuff. it's a way to practice syntax in terminal & early debugging.
+# Try the following in the temrinal after running flask shell
+# >>> from resources.users.UserModel import UserModel
+# >>> u = UserModel() which makes an instance of UserModel()
+# >>> according to usermodel() we need at least username, email, pw
+# >>>u.username = 'dylans'
+# >>>u.email = 'ds@ct.com'
+# >>>u.password_hash = '213'
+# >>>db.session.add(u)
+# >>>db.session.commit()
+# that should commit "u" into our database, so when you then type
+# >>>u.username, it will give 'dylans'
+# we get cool functionality when using DB models as far as PK/FK relationships. We'll be able to connect all instances of our users.
+# >>>from werkzeug.security import generate_password_hash, check_password_hash
+# >>>hashed = generate_password_hash('123')
+# returns: a very intersting, long, convoluted string of alphanumeric characters AKA the hashed pw
+# >>>check_password_hash(hashed, '123')
+# returns True if the second argument  (user's actual pw, not the hashed version) is correct, false if otherwise
+
+# THE IMPORTANT FUNCTIONS TO RUN IN TERMINAL TO UPLOAD YOUR WORK INTO THE ELEPHANTSQL DATABASE
+# flask db init (keep in mind the "db" is going to be whatever variable you make equal to SQLAlchemy(app) in the app __init__ file) (also you only run this command once, just like a git init)
+# flask db migrate -m "first migrate" (this is the staging portion, it's kinda the staging and pushing portion"
+# If after you migrate you see something like "Detected added table 'users'" - this is usually a good sign that your migration succeeded
+# flask db upgrade (this is the actual commit push portion)
+# YAY! Now check your elephantsql>browsre>table queries to make sure it all pushed thru. In the text box above that button you can type normal functions just like in SQL e.g. "SELECT * from "public"."users" LIMIT 100
+
+# now we can run flask shell again
+# >>>db
+# >>> u = UserModel(username='seanc', email='seanc@ct.com')
+# u.hash_password('123') # this is using the method in our PatientModel() to generate hashed pw
+# print(u.password_hash) (checks to make sure it got stored)
+# db.session.add(u)
+# db.session.commit()
+# woohoo it worked in the video
+
+# flask shell is just to test
