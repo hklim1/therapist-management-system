@@ -1,16 +1,18 @@
 patients = {
-    '1':{'name':'patrick',
+    '1':{'first_name':'patrick',
+         'last_name':'chakonas',
          'age':'26',
          'diagnosis':'distal radius ORIF',
-         'DOI/S':'09/12/2023',
-         'recovery week':'5',
+         'doi_dos':'09/12/2023',
+         'recovery_week':'5',
          'precautions':'current smoker'
         },
-    '2':{'name':'marjorie',
+    '2':{'first_name':'marjorie',
+         'last_name':'phan',
          'age':'82',
          'diagnosis':'carpal tunnel',
-         'DOI/S':'02/21/21',
-         'recovery week':'12+',
+         'doi_dos':'02/21/21',
+         'recovery_week':'12+',
          'precautions':'chronic injury, previous hx of cancer (NO ultrasound/heat)'
         }
 }
