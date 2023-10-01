@@ -1,10 +1,10 @@
-from flask import request
 from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
-from schemas import InterventionSchema, UpdatePatientSchema, PatientSchema, DeletePatientSchema
+from schemas import InterventionSchema, UpdatePatientSchema, PatientSchema, DeletePatientSchema, PatientSchemaNested
 from . import bp
 from .PatientModel import PatientModel
+from ..therapists.TherapistModel import TherapistModel
 
 from db import patients, interventions
 
@@ -57,7 +57,7 @@ class PatientList(MethodView):
 @bp.route('/patient/<patient_id>')
 class Patient(MethodView):
 
-    @bp.response(200, PatientSchema)
+    @bp.response(200, PatientSchemaNested)
     def get(self, patient_id):
         patient = PatientModel.query.get_or_404(patient_id, description='Patient Not Found')
         return patient
@@ -90,13 +90,15 @@ class Patient(MethodView):
 #     except KeyError:
 #         return {'message': 'patient not found'}, 400
 
-@bp.get('/patient/<patient_id>/intervention')
-@bp.response(200, InterventionSchema(many=True))
-def get_patient_interventions(patient_id):
-  if patient_id not in patients:
-    abort(404, message='Patient not found')
-  patient_interventions = [intervention for intervention in interventions.values() if intervention['patient_id'] == patient_id]
-  return patient_interventions, 200
+# This became redundant after we made PatientSchemaNested
+# @bp.get('/patient/<patient_id>/intervention')
+# @bp.response(200, InterventionSchema(many=True))
+# def get_patient_interventions(patient_id):
+#   if patient_id not in patients:
+#     abort(404, message='Patient not found')
+#   patient_interventions = [intervention for intervention in interventions.values() if intervention['patient_id'] == patient_id]
+#   return patient_interventions, 200
+
 # @app.get('/patient/<patient_id>/interventions')
 # def get_patient_interventions(patient_id):
 #     if patient_id not in patients:

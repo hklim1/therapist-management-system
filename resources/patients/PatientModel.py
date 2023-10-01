@@ -5,6 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # We make these Model files to serve as our way of creating tables in SQL
 # password_hash means user gives pw, werkzeug hashes it, passes us the hsahed pw. that way we dont have to store their sensitive data.
 
+# CREATING AN AUXILARY TABLE FOR MANY:MANY RELATIONSHIP. This is a table you can query off of, but it doesn't actually exist in the DB.
+
 class PatientModel(db.Model):
 
   __tablename__  = 'patients'
@@ -19,9 +21,10 @@ class PatientModel(db.Model):
   doi_dos = db.Column(db.String)
   recovery_week = db.Column(db.String)
   precautions = db.Column(db.String)
+  interventions = db.relationship('InterventionModel', backref='patient', lazy='dynamic', cascade='all, delete')
 
   def __repr__(self):
-    return f'<Patient: {self.first_name} {self.last_name}'
+    return f'<Patient: {self.id}: {self.first_name} {self.last_name} >'
   # this makes it easy to see who you are referencing when you type just "u" in the flask shell, so it turns the Object into something readable
   
   # def hash_password(self, password):
@@ -45,3 +48,9 @@ class PatientModel(db.Model):
   def delete(self):
     db.session.delete(self)
     db.session.commit()
+
+# class FollowerModel(db.Model):
+#   id = db.Column(db.Integer, primary_key=True)
+#   follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+#   following_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+# THIS IS ONE WAY TO DO A MANY TO MANY RELATIONSHIP. Even tho it's easier, it's not standard practice bc you are taking 2 FKs.
