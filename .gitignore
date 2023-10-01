@@ -3,7 +3,22 @@ hand-therapy/
 __pycache__/
 migrations/
 .vscode/
-# hand-therapy\ = the venv
+
+# ===================================================
+# ________________PURPOSE OF FOLDERS_________________
+
+# hand-therapy(venv): keeps the versions/libraries that our application is relying on. All of that is done thru pip installs. (leave alone)
+# migrations: kind of like the git folder. a version control system for our database (leave alone)
+# app:
+#      init file: "the brains of the folder". has some built in functionality, where anytime youre importing from a folder it will run thru ur init file. this is where we instantiate all of our libraries. we're depending on or connecting them to our application.
+# handbook.py: entry point to our application. it imports from app, so that's where we get access to all of our third party libraries, connect to blueprints, get routes and models we've been creating.
+# resources: what our server is serving- the data we are sending, receiving, & storing. we need to query our db if we want info about our users- so resources is where the magic happens.
+#   resources __init__: makes a blueprint to section all the code into a user section, mostly for organization, helps connects to routes
+#   resources routes: how we make all our endpoints. adds endpoints to our API, endpoints run the associated "now" method thats going to interact with our db (e.g. everything we see in insomnia)
+#   UserModel: specific to SQLAlchemy which is our ORM. allows us to interact w/ SQL db from our python env. Has a class (our db model), which is how we create a SQL alchemy table. Each class has attributes that will become the names of our columns - specifies data type & constraints. Also have associated utility methods - reusable code for when we're interacting w/ db (e.g. first creating user, storing user pw, checking pw)
+# gitignore - files we odnt want to send to github. might have things like sensitive info.
+# ===================================================
+# hand-therapy/ = the venv
 
 # flask-migrate is like a version control tool for sqlalchemy. its like a git for sql alchemy.
 
