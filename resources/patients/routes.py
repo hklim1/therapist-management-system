@@ -75,10 +75,23 @@ class PatientList(MethodView):
 @bp.route('/patient/<patient_id>')
 class Patient(MethodView):
 
+    # @bp.response(200, PatientSchemaNested)
+    # def get(self, patient_id):
+    #     patient = PatientModel.query.get_or_404(patient_id, description='Patient Not Found')
+    #     return patient
+
     @bp.response(200, PatientSchemaNested)
     def get(self, patient_id):
-        patient = PatientModel.query.get_or_404(patient_id, description='Patient Not Found')
-        return patient
+        patient = None
+        if patient_id.isdigit():
+            patient = PatientModel.query.get(patient_id)
+        if not patient:
+            patient = PatientModel.query.filter_by(last_name=patient_id).first() #I know that this is not secure at all but it is the only thing I could think of to test out this new function since I didn't make this with usernames!!
+        if patient:
+            return patient
+        abort(400, message="Please enter valid ID or last name")
+
+
 # @app.get('/patient/<patient_id>')
 # def get_patient(patient_id):
 #     try:
