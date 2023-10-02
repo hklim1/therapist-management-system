@@ -1,3 +1,5 @@
+# ============= LIVE SERVER ON RENDER: https://hand-therapy-database.onrender.com/ ================
+
 from flask import Flask
 from flask_smorest import Api
 from flask_sqlalchemy import SQLAlchemy
