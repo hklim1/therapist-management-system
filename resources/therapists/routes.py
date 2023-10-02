@@ -2,9 +2,10 @@
 from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
-from schemas import TherapistSchema, DeleteTherapistSchema, UpdateTherapistSchema, TherapistSchemaNested
+from schemas import TherapistSchema, DeleteTherapistSchema, UpdateTherapistSchema, TherapistSchemaNested, AuthTherapistSchema
 from . import bp
 from .TherapistModel import TherapistModel
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 @bp.route('/therapist')
 class TherapistList(MethodView):
@@ -25,6 +26,15 @@ class TherapistList(MethodView):
         except IntegrityError:
             abort(400, message='Therapist is already in system.')
 
+    # @jwt_required()
+    # @bp.arguments(AuthTherapistSchema)
+    # def delete(self, therapist_data):
+    #     therapist_id = get_jwt_identity()
+    #     therapist = TherapistModel.query.get(therapist_id)
+    #     if therapist and therapist.first_name == therapist_data['first_name'] and therapist.last_name == therapist_data['last_name'] and therapist.id == therapist_data['id']:
+    #         therapist.delete()
+    #         return {'message':f'{therapist_data["first_name"]} {therapist_data["last_name"]} has been deleted from system'}, 202
+    #     abort(400, message='Therapist ID Invalid')
     @bp.arguments(DeleteTherapistSchema)
     def delete(self, therapist_data):
         print(therapist_data)

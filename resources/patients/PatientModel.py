@@ -8,7 +8,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # CREATING AN AUXILARY TABLE FOR MANY:MANY RELATIONSHIP. This is a table you can query off of, but it doesn't actually exist in the DB.
 
 class PatientModel(db.Model):
-
+  # db.Model - db is coming from app, where db is instance of SQLAlchemy instantiated with our app. SQLAlchemy. So this db.Model is specific to SQLAlchemy. SQLAlchemy is how we interact w/ db (e.g. creating tables, interacting with tables). That's why we create these classes with inheritance from db>model, so that a table is created in our db.
+  # user = UserModel() = instance of a model AKA an entry, so you want to .save() and .commit()
+  # Schemas utilize Marshmallow library - doesn't directly do anything w/ model. Use them when you are sending info to a route. "thanks to flask-smorest" we can validate information using marshmallow
+  # Attributes in the Schemas must exactly match attributes in the Models "e.g. first_name == first_name"
   __tablename__  = 'patients'
 
 # each class attribute = a table column

@@ -6,7 +6,7 @@ class InterventionSchema(Schema):
   AROM = fields.Str(required = True)
   PROM = fields.Str(required = True)
   strengthening = fields.Str(required = True)
-  patient_id = fields.Int(required = True)
+  patient_id = fields.Int(dump_only = True)
   # patient = fields.list(fields.Nested(PatientSchema()), dumps_only = True)
   # because of the above line, need to move class InterventionSchema below class PatientSchema since code runs top to bottom. Need to make sure the PatientSchema exists first.
 
@@ -39,7 +39,7 @@ class UpdatePatientSchema(Schema):
   recovery_week = fields.Str()
   precautions = fields.Str()
 
-class DeletePatientSchema(Schema):
+class AuthPatientSchema(Schema):
   id = fields.Int(load_only = True)
   first_name = fields.Str(required = True)
   last_name = fields.Str(required = True)
@@ -52,6 +52,11 @@ class TherapistSchema(Schema):
   certifications = fields.Str()
   manager = fields.Bool()
 
+class AuthTherapistSchema(Schema):
+  id = fields.Int(load_only = True)
+  first_name = fields.Str(required = True)
+  last_name = fields.Str(required = True)
+
 class TherapistSchemaNested(TherapistSchema):
   manages = fields.List(fields.Nested(TherapistSchema), dump_only=True)
 
@@ -63,7 +68,7 @@ class UpdateTherapistSchema(Schema):
   manager = fields.Bool()
 
 class DeleteTherapistSchema(Schema):
-  id = fields.Int(load_only = True)
+  id = fields.Int(required = True, load_only = True)
   first_name = fields.Str(required = True)
   last_name = fields.Str(required = True)
 

@@ -62,3 +62,35 @@ migrations/
 # woohoo it worked in the video
 
 # flask shell is just to test
+
+# ================================== ACCESS TOKENS ==========================================
+# INSTALLS
+# ==============================
+# pip install flask-jwt-extended
+# --Used to help with access tokens
+
+# pip install gunicorn
+# --Used to host server?
+
+# TO GET SECRETS KEY, RUN THE FOLLOWING IN TERMINAL:
+# >>> python
+# >>> from secrets import SystemRandom()
+# >>> SystemRandom.getrandbits(128)
+
+# TO HAVE LOGIN ACCESS TOKENS AUTOMATICALLY RENEW IN INSOMNIA:
+# Header >> Authorization
+# Type Bearer and Select "Response = Body Attribute"
+# CHANGE THE FOLLOWING TO:
+# Request: [Auth Patient] POST LOGIN /login
+# Filter: $.access_token
+# Trigger behavior: When Expired
+# Max age: 300 seconds
+# YOU CAN ALSO DO THIS IN BASE ENVIRONMENT WHERE WE SET THE URL. Same process except it'll be a key-value pair: "access_token":"Response = Body Attribute"
+
+# -handles storing login sessions
+# -client (front end built on top of the server) handles user interface: asking to register, info the login and start, etc. without access token, nothing stops users from just being like "im user 5 and im gonna make a post about how i hate america". Need to authenticate who they are first. So we have client ask for username/pw then the user will hit our server: as long as its valid username & pw they are logged in, but important that we preserve that state on our server so later when they hit other points where they need to be logged in, the client knows that the user is still logged in and authenticated. If it's valid, we send them back an encoded access token with things like user id. Access tokens are safer and more secure than just repeatedly requesting the authetntication information. 
+
+# WHEN SETTING UP TO HOST YOUR DATABASE:
+# pip install gunicorn
+# pip freeze > requirements.txt
+# UPDATE YOUR GITHUB REPOSITORY. Will pull off a specific branch (usually the main one)

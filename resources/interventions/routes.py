@@ -3,6 +3,7 @@ from uuid import uuid4
 from flask.views import MethodView
 from flask_smorest import abort
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from resources.patients.PatientModel import PatientModel
 
@@ -14,6 +15,8 @@ from . import bp
 @bp.route('/')
 class InterventionList(MethodView):
 
+# TO UTILIZE AN ACCESS TOKEN, MAKE A NEW HEADER ON YOUR GET/POST/PUT/DELETE REQUEST IN INSOMNIA (OR WHEREVER) CALLED "AUTHORIZATION". IN DESCRIPTION WRITE "Bearer <access_token>" NO <>
+    @jwt_required()
     @bp.response(200, InterventionSchema(many=True))
     # need to add this bp.response to serialize the data, which will prevent code breaking
     def get(self):
@@ -22,15 +25,16 @@ class InterventionList(MethodView):
 # def get_interventions():
 #     return {'interventions': interventions}, 200
 
+    @jwt_required()
     @bp.arguments(InterventionSchema)
     @bp.response(200, InterventionSchema)
     def post(self, intervention_data):
-        i = InterventionModel(**intervention_data)
-        p = PatientModel.query.get(intervention_data['patient_id'])
-        if p:
+        patient_id = get_jwt_identity()
+        i = InterventionModel(**intervention_data, patient_id=patient_id)
+        try:
             i.save()
             return i
-        else:
+        except IntegrityError:
             abort(400, message="Invalid Patient ID")
 # **intervention_data == modalities = intervention_data['modalities'], arom = intervention_data['arom'], etc. ** destructures the dict and spreading it out. It's saying give me key(modalities) and its value(whatever is in there).
 
@@ -43,6 +47,7 @@ class InterventionList(MethodView):
 @bp.route('/<intervention_id>')
 class Intervention(MethodView):
 
+    @jwt_required()
     @bp.response(200, InterventionSchema) #this is a flask-smorest decorator
     def get(self, intervention_id):
         i = InterventionModel.query.get(intervention_id)
@@ -58,12 +63,14 @@ class Intervention(MethodView):
 #     except KeyError:
 #         return {'message': 'intervention not found'}, 400
 
+    @jwt_required()
     @bp.arguments(UpdateInterventionSchema)
     @bp.response(200, UpdateInterventionSchema)
     def put(self, intervention_data, intervention_id):
         i = InterventionModel.query.get(intervention_id)
         if i and intervention_data != {}:
-            if i.patient_id == intervention_data['patient_id']:
+            patient_id = get_jwt_identity()
+            if i.patient_id == patient_id:
                 if 'modalities' in intervention_data:
                     i.modalities = intervention_data['modalities']
                 if 'AROM' in intervention_data:
@@ -74,6 +81,8 @@ class Intervention(MethodView):
                     i.strengthening = intervention_data['strengthening']
                 i.save()
                 return i
+            else:
+                abort(401, message='Unauthorized')
         abort(400, message="Invalid Intervention Data")
 # what if they send us an empty value?
                 
@@ -99,16 +108,15 @@ class Intervention(MethodView):
 #         intervention['strengthening'] = intervention_data['strengthening']
 #         return intervention, 200
 #     return {'message': 'Intervention not found'}, 400
-
+    @jwt_required()
     def delete(self, intervention_id):
-        req_data = request.get_json()
-        patient_id = req_data['patient_id']
+        patient_id = get_jwt_identity()
         i = InterventionModel.query.get(intervention_id)
         if i:
             if i.patient_id == patient_id:
                 i.delete()
                 return {'message': f'Intervention for Patient #{patient_id} deleted'}, 202
-            abort(400, message="Patient is not associated with this Intervention Plan")
+            abort(401, message="Patient doesn't have rights")
         abort(400, message='Invalid Intervention ID')
         # try:
         #     deleted_intervention = interventions.pop(intervention_id)
