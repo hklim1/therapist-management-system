@@ -74,8 +74,9 @@ migrations/
 
 # TO GET SECRETS KEY, RUN THE FOLLOWING IN TERMINAL:
 # >>> python
-# >>> from secrets import SystemRandom()
+# >>> from secrets import SystemRandom
 # >>> SystemRandom.getrandbits(128)
+# also check into random library instead of secrets - check urlsafe function
 
 # TO HAVE LOGIN ACCESS TOKENS AUTOMATICALLY RENEW IN INSOMNIA:
 # Header >> Authorization

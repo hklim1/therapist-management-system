@@ -7,6 +7,11 @@ hierarchy = db.Table('hierarchy',
   db.Column('employee_id', db.Integer, db.ForeignKey('therapists.id'))           
 )
 
+treatments = db.Table('treatments',
+  db.Column('treater_id', db.Integer, db.ForeignKey('therapists.id')),
+  db.Column('treatee_id', db.Integer, db.ForeignKey('patients.id'))           
+)
+
 class TherapistModel(db.Model):
 
   __tablename__  = 'therapists'
@@ -22,6 +27,13 @@ class TherapistModel(db.Model):
     primaryjoin = hierarchy.c.manager_id == id,
     secondaryjoin = hierarchy.c.employee_id == id,
     backref = db.backref('managers', lazy='dynamic'),
+    lazy='dynamic' 
+  )
+  treats = db.relationship('TherapistModel', 
+    secondary=treatments, 
+    primaryjoin = treatments.c.treater_id == id,
+    secondaryjoin = treatments.c.treatee_id == id,
+    backref = db.backref('therapists', lazy='dynamic'),
     lazy='dynamic' 
   )
 
